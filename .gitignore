@@ -24,4 +24,5 @@ ML_examples
 datasets
 *.dat
 *.docx
+ .DS_Store
 
