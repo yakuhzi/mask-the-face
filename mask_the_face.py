@@ -4,6 +4,7 @@
 
 import argparse
 import dlib
+import numpy as np
 from utils.aux_functions import *
 
 
@@ -146,8 +147,20 @@ if is_directory:
                     + "."
                     + split_path[1]
                 )
+                w_path_mask = (
+                    write_path
+                    + "/"
+                    + split_path[0]
+                    + "_"
+                    + mask[i]
+                    + "_binary_mask."
+                    + split_path[1]
+                )
                 img = masked_image[i]
+                mask_binary = mask_binary_array[i]
+                mask_binary = np.clip(mask_binary, 0, 1) * 255
                 cv2.imwrite(w_path, img)
+                cv2.imwrite(w_path_mask, mask_binary)
 
     print_orderly("Masking image directories", 60)
 
@@ -173,16 +186,9 @@ if is_directory:
                     image_path, args
                 )
                 for i in range(len(mask)):
-                    w_path = (
-                        write_path
-                        + "/"
-                        + split_path[0]
-                        + "_"
-                        + mask[i]
-                        + "."
-                        + split_path[1]
-                    )
+                    w_path = write_path + "/" + split_path[0] + "_" + mask[i] + "." + split_path[1]
                     w_path_original = write_path + "/" + f
+                    w_path_mask = write_path + "/" + f
                     img = masked_image[i]
                     # Write the masked image
                     cv2.imwrite(w_path, img)
