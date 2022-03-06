@@ -20,6 +20,18 @@ parser.add_argument(
     help="Path to either the folder containing images or the image itself",
 )
 parser.add_argument(
+    "--write_path",
+    type=str,
+    default="",
+    help="Path to the output folder of the masked iamges",
+)
+parser.add_argument(
+    "--binary_mask_path",
+    type=str,
+    default="",
+    help="Path to the output folder of the binary masks",
+)
+parser.add_argument(
     "--mask_type",
     type=str,
     default="surgical",
@@ -76,7 +88,6 @@ parser.add_argument(
 parser.set_defaults(feature=False)
 
 args = parser.parse_args()
-args.write_path = args.path + "_masked"
 
 # Set up dlib face detector and predictor
 args.detector = dlib.get_frontal_face_detector()
@@ -110,7 +121,6 @@ for i, entry in enumerate(mask_code):
 
 # Check if path is file or directory or none
 is_directory, is_file, is_other = check_path(args.path)
-display_MaskTheFace()
 
 if is_directory:
     path, dirs, files = os.walk(args.path).__next__()
@@ -123,9 +133,14 @@ if is_directory:
     for f in tqdm(files):
         image_path = path + "/" + f
 
-        write_path = path + "_masked"
+        write_path = args.write_path
+        mask_write_path = args.binary_mask_path
+
         if not os.path.isdir(write_path):
             os.makedirs(write_path)
+
+        if not os.path.isdir(mask_write_path):
+            os.makedirs(mask_write_path)
 
         if is_image(image_path):
             # Proceed if file is image
@@ -148,7 +163,7 @@ if is_directory:
                     + split_path[1]
                 )
                 w_path_mask = (
-                    write_path
+                    mask_write_path
                     + "/"
                     + split_path[0]
                     + "_"
@@ -168,8 +183,14 @@ if is_directory:
     for d in tqdm(dirs):
         dir_path = args.path + "/" + d
         dir_write_path = args.write_path + "/" + d
+        dir_mask_write_path = args.binary_mask_path + "/" + d
+
         if not os.path.isdir(dir_write_path):
             os.makedirs(dir_write_path)
+
+        if not os.path.isdir(dir_mask_write_path):
+            os.makedirs(dir_mask_write_path)
+
         _, _, files = os.walk(dir_path).__next__()
 
         # Process each files within subdirectory
@@ -179,6 +200,7 @@ if is_directory:
                 str_p = "Processing: " + image_path
                 tqdm.write(str_p)
             write_path = dir_write_path
+            mask_write_path = dir_mask_write_path
             if is_image(image_path):
                 # Proceed if file is image
                 split_path = f.rsplit(".")
@@ -187,11 +209,14 @@ if is_directory:
                 )
                 for i in range(len(mask)):
                     w_path = write_path + "/" + split_path[0] + "_" + mask[i] + "." + split_path[1]
+                    w_path_mask = mask_write_path + "/" + split_path[0] + "_" + mask[i] + "." + split_path[1]
                     w_path_original = write_path + "/" + f
-                    w_path_mask = write_path + "/" + f
                     img = masked_image[i]
+                    mask_binary = mask_binary[i]
+                    mask_binary = np.clip(mask_binary, 0, 1) * 255
                     # Write the masked image
                     cv2.imwrite(w_path, img)
+                    cv2.imwrite(w_path_mask, mask_binary)
                     if args.write_original_image:
                         # Write the original image
                         cv2.imwrite(w_path_original, original_image)
