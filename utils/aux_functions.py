@@ -16,6 +16,7 @@ from zipfile import ZipFile
 from tqdm import tqdm
 import bz2, shutil
 
+random.seed(2022)
 
 def download_dlib_model():
     print_orderly("Get dlib model", 60)
