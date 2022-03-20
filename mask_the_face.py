@@ -8,7 +8,6 @@ import numpy as np
 from utils.aux_functions import *
 
 
-
 # Command-line input setup
 parser = argparse.ArgumentParser(
     description="MaskTheFace - Python code to mask faces dataset"
@@ -157,8 +156,6 @@ if is_directory:
                     write_path
                     + "/"
                     + split_path[0]
-                    + "_"
-                    + mask[i]
                     + "."
                     + split_path[1]
                 )
@@ -166,10 +163,7 @@ if is_directory:
                     mask_write_path
                     + "/"
                     + split_path[0]
-                    + "_"
-                    + mask[i]
-                    + "_binary_mask."
-                    + split_path[1]
+                    + ".png"
                 )
                 img = masked_image[i]
                 mask_binary = mask_binary_array[i]
@@ -209,7 +203,7 @@ if is_directory:
                 )
                 for i in range(len(mask)):
                     w_path = write_path + "/" + split_path[0] + "_" + mask[i] + "." + split_path[1]
-                    w_path_mask = mask_write_path + "/" + split_path[0] + "_" + mask[i] + "." + split_path[1]
+                    w_path_mask = mask_write_path + "/" + split_path[0] + "_" + mask[i] + ".png"
                     w_path_original = write_path + "/" + f
                     img = masked_image[i]
                     mask_binary = mask_binary[i]
