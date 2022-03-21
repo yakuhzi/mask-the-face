@@ -55,14 +55,14 @@ parser.add_argument(
 parser.add_argument(
     "--color",
     type=str,
-    default="#0473e2",
+    # default="#0473e2",
     help="Hex color value that need to be overlayed to the mask",
 )
 
 parser.add_argument(
     "--color_weight",
     type=float,
-    default=0.5,
+    # default=0.5,
     help="Weight of the color intensity. Must be between 0 and 1",
 )
 
@@ -202,8 +202,8 @@ if is_directory:
                     image_path, args
                 )
                 for i in range(len(mask)):
-                    w_path = write_path + "/" + split_path[0] + "_" + mask[i] + "." + split_path[1]
-                    w_path_mask = mask_write_path + "/" + split_path[0] + "_" + mask[i] + ".png"
+                    w_path = write_path + "/" + split_path[0] + "." + split_path[1]
+                    w_path_mask = mask_write_path + "/" + split_path[0] + ".png"
                     w_path_original = write_path + "/" + f
                     img = masked_image[i]
                     mask_binary = mask_binary[i]
